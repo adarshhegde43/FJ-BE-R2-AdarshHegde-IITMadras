@@ -22,7 +22,11 @@ const Transaction = sequelize.define('Transaction', {
     type: {
         type: DataTypes.ENUM('income', 'expense'),
         allowNull: false
-    }
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
 });
 
 Transaction.belongsTo(User , {foreignKey: 'userId'});
