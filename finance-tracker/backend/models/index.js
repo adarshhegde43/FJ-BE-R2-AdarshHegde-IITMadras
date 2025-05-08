@@ -5,6 +5,7 @@ require('dotenv').config();
 //Using values from .env for db configuration...
 const sequelize = new Sequelize({
     host: process.env.DB_HOST,
+    port: process.env.DB_PORT, 
     dialect: 'postgres',
     username:  process.env.DB_USER,
     password:  process.env.DB_PASSWORD,
