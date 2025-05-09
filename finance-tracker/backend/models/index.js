@@ -1,21 +1,37 @@
-const { Sequelize , DataTypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
-//Creating a Sequelize instance , and connecting it to PostgreSQL...
-//Using values from .env for db configuration...
 const sequelize = new Sequelize({
     host: process.env.DB_HOST,
-    port: process.env.DB_PORT, 
+    port: process.env.DB_PORT,
     dialect: 'postgres',
-    username:  process.env.DB_USER,
-    password:  process.env.DB_PASSWORD,
-    database:  process.env.DB_NAME,
-})
+    username: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+});
 
-//Now testing the connection...
 sequelize.authenticate()
-    .then(() => console.log('Databse connected successfully !'))
-    .catch(err => console.log('Unable to connect to the database: ',err));
+    .then(() => console.log('Database connected successfully!'))
+    .catch(err => console.error('Database connection failed:', err));
 
-//Exporting the sequelize to other models...
-module.exports = {sequelize , DataTypes};
+// Import models
+const User = require('./User')(sequelize, DataTypes);
+const ExpenseCategory = require('./ExpenseCategory')(sequelize, DataTypes);
+const IncomeSource = require('./IncomeSource')(sequelize, DataTypes);
+const Transaction = require('./Transaction')(sequelize, DataTypes);
+
+// Setup associations
+Transaction.belongsTo(User, { foreignKey: 'userId' });
+Transaction.belongsTo(ExpenseCategory, { foreignKey: 'expenseCategoryId' });
+Transaction.belongsTo(IncomeSource, { foreignKey: 'incomeSourceId' });
+
+User.hasMany(Transaction, { foreignKey: 'userId' });
+
+module.exports = {
+    sequelize,
+    Sequelize,
+    User,
+    ExpenseCategory,
+    IncomeSource,
+    Transaction
+};

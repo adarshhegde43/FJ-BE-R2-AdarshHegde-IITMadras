@@ -1,6 +1,7 @@
 const express = require('express');
 const { sequelize } = require('./models');
 const authenticateJWT = require('./middleware/authenticateJWT');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 app.use(express.json());
@@ -97,6 +98,8 @@ app.post('/auth/login', async (req, res) => {
 app.get('/transactions', authenticateJWT, (req, res) => {
     res.send('This is a protected route, user is authenticated');
 });
+
+app.use('/api', authenticateJWT , dashboardRoutes );
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT , ()=> {
